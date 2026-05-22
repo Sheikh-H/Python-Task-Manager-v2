@@ -255,70 +255,35 @@ def view_tasks_print(user, category):
 
 
 def main():
-    if len(sys.argv) <= 2:
+    # Empty function call:
+    if len(sys.argv) <= 2 or "--help" in sys.argv:
         error(
-            "Please use login details then task actions",
-            "Syntax: task-cli.py [username] [password] [function] [task id] [parameter]",
+            "To use the Task Manager CLI, please enter with the following syntax:",
+            "To add new user: task-cli.py new_user [new username] [new password]",
+            "To change password: task-cli.py [username] [old password] [new password]",
+            "To add a task: task-cli.py [username] [password] add_task [task title]",
+            "To update a task: task-cli.py [username] [password] update_task [task id number or 'task title']",
+            "To delete a task: task-cli.py [username] [password] delete_task [task id number or 'task title']",
+            "To view all tasks: task-cli.py [username] [password] view"
+            "To view specific type of tasks: task-cli.py [username] [password] view [type of task i.e. 'to be completed']"
+            "NOTE: Where you could use more than one word for a criteria please enclose in speech marks ('')",
+            "Type task-cli.py --help to see this menu again",
         )
-
-    # Add a new user:
-    if str(sys.argv[1]).lower() == "new_user" and len(sys.argv) == 4:
-        new_user(str(sys.argv[2]), str(sys.argv[3]))
-
-    if str(object=sys.argv[1]).lower() == "new_user" and len(sys.argv) <= 3:
-        error(
-            "Please enter a username and password to create new user",
-            "Syntax: task-cli.py new_user [username] [password]",
-        )
-
-    # Change a users password:
-    if str(sys.argv[1]).lower() == "change_password" and len(sys.argv) == 5:
-        change_password(str(sys.argv[2]), str(sys.argv[3]), str(sys.argv[4]))
-
-    if str(sys.argv[1]).lower() == "change_password" and len(sys.argv) <= 4:
-        error(
-            "Please enter an existing username and password to change password",
-            "Syntax: task-cli.py change_password [username] [old password] [password]",
-        )
-
-    # Add new task:
-    if len(sys.argv) >= 4 and str(sys.argv[3]).lower() == "add_task":
-        error(
-            "Please enter in the following format:",
-            "task-cli.py [username] [password] add_task [task title]",
-        )
-
-    if len(sys.argv) == 5 and str(sys.argv[3]).lower() == "add_task":
-        add_task(str(sys.argv[1]), str(sys.argv[2]), str(sys.argv[4]))
-
-    # Delete Task:
-    if len(sys.argv) >= 4 and str(sys.argv[3]).lower() == "delete_task":
-        error(
-            "Please enter in the following format:",
-            "task-cli.py [username] [password] delete_task [task id]",
-        )
-
-    if len(sys.argv) == 5 and str(sys.argv[3]).lower() == "delete_task":
-        delete_task(str(sys.argv[1]), str(sys.argv[2]), str(sys.argv[4]))
-
-    # Update Task:
-    if len(sys.argv) >= 4 and str(sys.argv[3]).lower() == "update_task":
-        error(
-            "Please enter in the following format:",
-            "task-cli.py [username] [password] update_task [task id / title] [new task title]",
-        )
-
-    if len(sys.argv) >= 4 and str(sys.argv[3]).lower() == "update_task":
-        update_task(
-            str(sys.argv[1]), str(sys.argv[2]), str(sys.argv[4]), str(sys.argv[5])
-        )
-
-    # view tasks:
-    if str(sys.argv[3]).lower() == "list":
-        list_task(str(sys.argv[1]), str(sys.argv[2]), "all")
-
-    if len(sys.argv) == 5 and str(sys.argv[3]).lower() == "list":
-        list_task(str(sys.argv[1]), str(sys.argv[2]), sys.argv[4].lower())
+    elif "new_user" in sys.argv[1]:
+        new_user(sys.argv[2], sys.argv[3])
+    elif "change_password" in sys.argv[1]:
+        change_password(sys.argv[1], sys.argv[2], sys.argv[3])
+    elif "add_task" in sys.argv[3]:
+        add_task(sys.argv[1], sys.argv[2], sys.argv[4])
+    elif "update_task" in sys.argv[3]:
+        update_task(sys.argv[1], sys.argv[2], sys.argv[4])
+    elif "delete_task" in sys.argv[3]:
+        delete_task(sys.argv[1], sys.argv[2], sys.argv[4])
+    elif "view" in sys.argv[3] and len(sys.argv) < 4:
+        list_task(sys.argv[1], sys.argv[2], "all")
+    elif "view" in sys.argv[3] and len(sys.argv) > 4:
+        list_task(sys.argv[1], sys.argv[2], sys.argv[4])
+        
 
 
 main()
