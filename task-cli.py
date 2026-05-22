@@ -269,21 +269,22 @@ def main():
             "NOTE: Where you could use more than one word for a criteria please enclose in speech marks ('')",
             "Type task-cli.py --help to see this menu again",
         )
-    elif "new_user" in sys.argv[1]:
+    elif sys.argv[1].lower() == "new_user":
         new_user(sys.argv[2], sys.argv[3])
-    elif "change_password" in sys.argv[1]:
-        change_password(sys.argv[1], sys.argv[2], sys.argv[3])
-    elif "add_task" in sys.argv[3]:
+    elif sys.argv[1].lower() == "change_password":
+        change_password(sys.argv[2], sys.argv[3], sys.argv[4])
+    elif sys.argv[3].lower() == "add_task":
         add_task(sys.argv[1], sys.argv[2], sys.argv[4])
-    elif "update_task" in sys.argv[3]:
-        update_task(sys.argv[1], sys.argv[2], sys.argv[4])
-    elif "delete_task" in sys.argv[3]:
+    elif sys.argv[3].lower() == "update_task":
+        update_task(sys.argv[1], sys.argv[2], sys.argv[4], sys.argv[5])
+    elif sys.argv[3].lower() == "delete_task":
         delete_task(sys.argv[1], sys.argv[2], sys.argv[4])
-    elif "view" in sys.argv[3] and len(sys.argv) < 4:
+    elif "view" == sys.argv[3].lower() and len(sys.argv) == 4:
         list_task(sys.argv[1], sys.argv[2], "all")
-    elif "view" in sys.argv[3] and len(sys.argv) > 4:
+    elif "view" == sys.argv[3].lower() and len(sys.argv) == 5:
         list_task(sys.argv[1], sys.argv[2], sys.argv[4])
-        
+    else:
+        error("Invalid command!", "Type task-cli.py --help for manual")
 
 
 main()
