@@ -4,13 +4,13 @@
     "username": "alif",
     "password": "password",
     "created_at": "2026-05-22 19:40:24",
-    "last_updated": "2026-05-22 19:45:11"
+    "last_updated": "2026-05-22 20:14:43"
   },
   {
     "id": 3,
     "username": "Hussain",
-    "password": "Password1",
+    "password": "password",
     "created_at": "2026-05-22 19:42:07",
-    "last_updated": null
+    "last_updated": "2026-05-22 20:14:30"
   }
 ]

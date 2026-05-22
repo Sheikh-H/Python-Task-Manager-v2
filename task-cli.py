@@ -58,8 +58,8 @@ def user_login(username, password):
                 return user
             else:
                 error("Password Incorrect, try again!")
-        else:
-            error("Username doesn't exist!")
+    else:
+        error("Username doesn't exist!")
 
 
 def new_user(username, password):
@@ -71,16 +71,16 @@ def new_user(username, password):
             break
 
     id = max((user["id"] for user in ALL_USERS), default=0) + 1
-    
+
     now = str(datetime.now().replace(microsecond=0))
-    
+
     add_user = {
-        "id": id,
+        "id": int(id),
         "username": username,
         "password": password,
         "created_at": now,
         "last_updated": None,
-        }
+    }
 
     ALL_USERS.append(add_user)
 
@@ -97,18 +97,17 @@ def change_password(username, old_password, new_password):
             "No Existing Users!",
             "Please create a new user first with 'new_user' [username] [password]",
         )
+
     now = str(datetime.now().replace(microsecond=0))
-    for user in ALL_USERS:
-        if user['username'] == username:
-            if user["password"] == old_password:
+
+    current_user = user_login(username, old_password)
+    if current_user:
+        for user in ALL_USERS:
+            if str(user["id"]) == str(current_user["id"]):
                 user["password"] = new_password
                 user["last_updated"] = now
                 save_data(ALL_USERS, USERS_FILE)
                 error(f"Password updated for '{user['username']}'")
-            else:
-                error("Password doesn't match, try again!")
-        else:
-            error("Username not found, try again!")
 
 
 def add_task(username, password, task_title):
@@ -120,14 +119,14 @@ def add_task(username, password, task_title):
     current_user_tasks = []
 
     for task in ALL_TASKS:
-        if task["user_id"] == current_user["id"]:
+        if str(task["user_id"]) == str(current_user["id"]):
             current_user_tasks.append(task)
 
     id = max((task["id"] for task in current_user_tasks), default=0) + 1
 
     new_task = {
-        "id": id,
-        "user_id": current_user["id"],
+        "id": int(id),
+        "user_id": int(current_user["id"]),
         "title": task_title,
         "status": "to-do",
         "created_at": f"{datetime.now().replace(microsecond=0)}",
@@ -139,6 +138,22 @@ def add_task(username, password, task_title):
     error(f"Task added for user '{current_user['username']}'!")
 
 
+def delete_task(username, password, task_id):
+    global ALL_TASKS
+    global ALL_USERS
+
+    current_user = user_login(username, password)
+
+    for i, task in enumerate(ALL_TASKS):
+        if str(task["user_id"]) == str(current_user["id"]):
+            if str(task["id"]) == task_id:
+                del ALL_TASKS[i]
+                save_data(ALL_TASKS, TASKS_FILE)
+                error("Task deleted successfully!")
+            else:
+                error("No task with this ID, try again!")
+
+
 def main():
     if len(sys.argv) <= 2:
         error(
@@ -146,7 +161,7 @@ def main():
             "Syntax: task-cli.py [username] [password] [function] [task id] [parameter]",
         )
 
-    # Add a new user
+    # Add a new user:
     if str(sys.argv[1]).lower() == "new_user" and len(sys.argv) == 4:
         new_user(str(sys.argv[2]), str(sys.argv[3]))
 
@@ -156,7 +171,7 @@ def main():
             "Syntax: task-cli.py new_user [username] [password]",
         )
 
-    # Change a users password
+    # Change a users password:
     if str(sys.argv[1]).lower() == "change_password" and len(sys.argv) == 5:
         change_password(str(sys.argv[2]), str(sys.argv[3]), str(sys.argv[4]))
 
@@ -166,7 +181,7 @@ def main():
             "Syntax: task-cli.py change_password [username] [old password] [password]",
         )
 
-    # Add new task
+    # Add new task:
     if len(sys.argv) < 5 and str(sys.argv[3]).lower() == "add_task":
         error(
             "Please enter in the following format:",
@@ -175,6 +190,15 @@ def main():
 
     if len(sys.argv) == 5 and str(sys.argv[3]).lower() == "add_task":
         add_task(str(sys.argv[1]), str(sys.argv[2]), str(sys.argv[3]))
+
+    # Delete Task:
+    if len(sys.argv) < 5 and str(sys.argv[3]).lower() == "delete_task":
+        error(
+            "Please enter in the following format:",
+            "task-cli.py [username] [password] delete_task [task id]",
+        )
+    if len(sys.argv) < 5 and str(sys.argv[3]).lower() == "delete_task":
+        delete_task(str(sys.argv[1]), str(sys.argv[2]), str(sys.argv[3]))
 
 
 main()
