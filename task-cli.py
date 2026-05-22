@@ -81,19 +81,37 @@ def new_user(username, password):
     error("New User Added!")
 
 
-def change_password(username, password):
+def change_password(username, old_password, new_password):
     global ALL_USERS
-    
+
     if not ALL_USERS:
-        error("No Existing Users!", "Please create a new user first with 'new_user' [username] [password]")
-        
+        error(
+            "No Existing Users!",
+            "Please create a new user first with 'new_user' [username] [password]",
+        )
+
     for user in ALL_USERS:
-        if username == user['username']:
-            user['password'] = password
-            save_data(ALL_USERS, USERS_FILE)
-            error(f"Password updated for '{user['username']}'")
+        if username == user["username"]:
+            if user["password"] == old_password:
+                user["password"] = new_password
+                save_data(ALL_USERS, USERS_FILE)
+                error(f"Password updated for '{user['username']}'")
+            else:
+                error("Password doesn't match, try again!")
         else:
             error("Username not found, try again!")
+
+
+def add_task(username, task_title):
+    global ALL_TASKS
+    global ALL_USERS
+
+    current_user = {}
+
+    for user in ALL_USERS:
+        if user["username"] == username:
+            current_user = user
+            break
 
 
 def main():
@@ -106,23 +124,25 @@ def main():
             "Syntax: task-cli.py [username] [password] [function] [task id] [parameter]",
         )
 
+    # Add a new user
+    if str(sys.argv[1]).lower() == "new_user" and len(sys.argv) == 4:
+        new_user(str(sys.argv[2]), str(sys.argv[3]))
+
     if str(object=sys.argv[1]).lower() == "new_user" and len(sys.argv) <= 3:
         error(
             "Please enter a username and password to create new user",
             "Syntax: task-cli.py new_user [username] [password]",
         )
 
-    if str(sys.argv[1]).lower() == "change_password" and len(sys.argv) <= 3:
+    # Change a users password
+    if str(sys.argv[1]).lower() == "change_password" and len(sys.argv) == 5:
+        change_password(str(sys.argv[2]), str(sys.argv[3]), str(sys.argv[4]))
+
+    if str(sys.argv[1]).lower() == "change_password" and len(sys.argv) <= 4:
         error(
             "Please enter an existing username and password to change password",
-            "Syntax: task-cli.py change_password [username] [password]",
+            "Syntax: task-cli.py change_password [username] [old password] [password]",
         )
-
-    if str(sys.argv[1]).lower() == "change_password" and len(sys.argv) == 4:
-        change_password(str(sys.argv[2]), str(sys.argv[3]))
-
-    if str(sys.argv[1]).lower() == "new_user" and len(sys.argv) == 4:
-        new_user(str(sys.argv[2]), str(sys.argv[3]))
 
 
 main()
