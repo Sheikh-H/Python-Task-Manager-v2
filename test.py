@@ -1,3 +1,7 @@
-import sys
+import json
+with open("tasks.json", 'r') as f:
+    data = json.load(f)
+    
 
-print(sys.argv[1])
+for task in data:
+    print(task['status'].upper())

@@ -204,40 +204,89 @@ def update_task(username, password, task_search, new_title):
                 )
 
 
-def list_view(username, password, list_type=""):
+def list_task(username, password, list_type=""):
     global ALL_TASKS
 
     current_user = user_login(username, password)
-    if current_user:
-        if list_type.lower() not in [
-            "done",
-            "todo",
-            "to-do",
-            "pending",
-            "in progress",
-            "in-progress",
-            "",
-            "all",
-            "completed",
-            "finished",
-        ]:
-            error(
-                "Please enter the type of tasks you would like to see, here is a list of all acceptable values:",
-                "['done', 'todo', 'to-do', 'pending', 'in progress', 'in-progress', '', 'all']",
-            )
-        if list_type.lower() in ["done", "completed", "finished"]:
-            for task in ALL_TASKS:
-                if (
-                    str(task["user_id"]) == str(current_user["id"])
-                    and task["status"].lower() == "completed"
-                ):
-                    print("-" * 50)
-                    print(f"Task ID: {task['id']}")
-                    print(f"Task Title: {task['title']}")
-                    print(f"Task Status: {task['status']}")
-                    print(f"Created at: {task['created_at']}")
-                    print(f"Updated at: {task['updated_at']}")
-            error("-" * 50)
+
+    if list_type not in [
+        "done",
+        "todo",
+        "to-do",
+        "pending",
+        "in progress",
+        "in-progress",
+        "all",
+        "completed",
+        "finished",
+    ]:
+        error(
+            "Please enter the type of tasks you would like to see, here is a list of all acceptable values:",
+            "['done', 'todo', 'to-do', 'pending', 'in progress', 'in-progress', 'all']",
+            "You can also leave it black and it will list all your tasks",
+        )
+
+    if list_type in ["all", ""]:
+        print("Here are all your tasks:")
+        for task in ALL_TASKS:
+            if str(task["user_id"]) == str(current_user["id"]):
+                print("-" * 50)
+                print(f"Task ID: {task['id']}")
+                print(f"Title: {task['title']}")
+                print(f"Status: {task['status']}")
+                print(f"Created At: {task['created_at']}")
+                print(f"Last Updated: {task['updated_at']}")
+
+    if list_type in ["done", "completed", "finished", "archived"]:
+        for task in ALL_TASKS:
+            if (str(task["user_id"]) == str(current_user["id"])) and task[
+                "status"
+            ].lower() == "completed":
+                print("-" * 50)
+                print(f"Task ID: {task['id']}")
+                print(f"Title: {task['title']}")
+                print(f"Status: {task['status']}")
+                print(f"Created At: {task['created_at']}")
+                print(f"Last Updated: {task['updated_at']}")
+
+    if list_type in [
+        "in-progress",
+        "in progress",
+        "active",
+        "doing now",
+        "current",
+        "working on",
+    ]:
+        for task in ALL_TASKS:
+            if (str(task["user_id"]) == str(current_user["id"])) and task[
+                "status"
+            ].lower() == "in-progress":
+                print("-" * 50)
+                print(f"Task ID: {task['id']}")
+                print(f"Title: {task['title']}")
+                print(f"Status: {task['status']}")
+                print(f"Created At: {task['created_at']}")
+                print(f"Last Updated: {task['updated_at']}")
+
+    if list_type in [
+        "not started",
+        "pending",
+        "todo",
+    ]:
+        for task in ALL_TASKS:        
+            found = False
+            if (str(task["user_id"]) == str(current_user["id"])) and task[
+                "status"
+            ].lower() == "todo":
+                found = True
+                print("-" * 50)
+                print(f"Task ID: {task['id']}")
+                print(f"Title: {task['title']}")
+                print(f"Status: {task['status']}")
+                print(f"Created At: {task['created_at']}")
+                print(f"Last Updated: {task['updated_at']}")
+        if found == False: 
+            error(f"You have no '{list_type}' tasks!")
 
 
 def main():
@@ -283,6 +332,7 @@ def main():
             "Please enter in the following format:",
             "task-cli.py [username] [password] delete_task [task id]",
         )
+
     if len(sys.argv) == 5 and str(sys.argv[3]).lower() == "delete_task":
         delete_task(str(sys.argv[1]), str(sys.argv[2]), str(sys.argv[4]))
 
@@ -292,21 +342,18 @@ def main():
             "Please enter in the following format:",
             "task-cli.py [username] [password] update_task [task id / title] [new task title]",
         )
+
     if len(sys.argv) == 6 and str(sys.argv[3]).lower() == "update_task":
         update_task(
             str(sys.argv[1]), str(sys.argv[2]), str(sys.argv[4]), str(sys.argv[5])
         )
 
-        # list Tasks:
-    if len(sys.argv) < 6 and str(sys.argv[3]).lower() == "update_task":
-        error(
-            "Please enter in the following format:",
-            "task-cli.py [username] [password] list [task type]",
-        )
-    if len(sys.argv) == 6 and str(sys.argv[3]).lower() == "list":
-        update_task(
-            str(sys.argv[1]), str(sys.argv[2]), str(sys.argv[4]), str(sys.argv[5])
-        )
+    # view tasks:
+    if str(sys.argv[3]).lower() == "list":
+        list_task(str(sys.argv[1]), str(sys.argv[2]), str("all"))
+
+    if len(sys.argv) == 5 and str(sys.argv[3]).lower() == "list":
+        list_task(str(sys.argv[1]), str(sys.argv[2]), str(sys.argv[4]).lower())
 
 
 main()
