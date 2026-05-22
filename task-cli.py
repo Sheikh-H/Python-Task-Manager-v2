@@ -2,6 +2,7 @@ import sys
 import json
 import os
 from time import sleep
+from datetime import datetime
 
 
 def save_data(data, filename):
@@ -52,10 +53,13 @@ def user_login(username, password):
         )
 
     for user in ALL_USERS:
-        if sys.argv[2] == user["username"]:
-            print("User exists, checking password...")
-            if sys.argv[3] != user["password"]:
-                error("Password incorrect")
+        if user["username"] == username:
+            if user["password"] == password:
+                return user
+            else:
+                error("Password Incorrect, try again!")
+        else:
+            error("Username doesn't exist!")
 
 
 def new_user(username, password):
@@ -67,12 +71,16 @@ def new_user(username, password):
             break
 
     id = max((user["id"] for user in ALL_USERS), default=0) + 1
-
+    
+    now = str(datetime.now().replace(microsecond=0))
+    
     add_user = {
         "id": id,
         "username": username,
         "password": password,
-    }
+        "created_at": now,
+        "last_updated": None,
+        }
 
     ALL_USERS.append(add_user)
 
@@ -89,11 +97,12 @@ def change_password(username, old_password, new_password):
             "No Existing Users!",
             "Please create a new user first with 'new_user' [username] [password]",
         )
-
+    now = str(datetime.now().replace(microsecond=0))
     for user in ALL_USERS:
-        if username == user["username"]:
+        if user['username'] == username:
             if user["password"] == old_password:
                 user["password"] = new_password
+                user["last_updated"] = now
                 save_data(ALL_USERS, USERS_FILE)
                 error(f"Password updated for '{user['username']}'")
             else:
@@ -102,23 +111,36 @@ def change_password(username, old_password, new_password):
             error("Username not found, try again!")
 
 
-def add_task(username, task_title):
+def add_task(username, password, task_title):
     global ALL_TASKS
     global ALL_USERS
 
-    current_user = {}
+    current_user = user_login(username, password)
 
-    for user in ALL_USERS:
-        if user["username"] == username:
-            current_user = user
-            break
+    current_user_tasks = []
+
+    for task in ALL_TASKS:
+        if task["user_id"] == current_user["id"]:
+            current_user_tasks.append(task)
+
+    id = max((task["id"] for task in current_user_tasks), default=0) + 1
+
+    new_task = {
+        "id": id,
+        "user_id": current_user["id"],
+        "title": task_title,
+        "status": "to-do",
+        "created_at": f"{datetime.now().replace(microsecond=0)}",
+        "updated_at": None,
+    }
+
+    ALL_TASKS.append(new_task)
+    save_data(ALL_TASKS, TASKS_FILE)
+    error(f"Task added for user '{current_user['username']}'!")
 
 
 def main():
-    if len(sys.argv) == 2:
-        error("Please enter a username and password!")
-
-    if len(sys.argv) <= 1:
+    if len(sys.argv) <= 2:
         error(
             "Please use login details then task actions",
             "Syntax: task-cli.py [username] [password] [function] [task id] [parameter]",
@@ -143,6 +165,16 @@ def main():
             "Please enter an existing username and password to change password",
             "Syntax: task-cli.py change_password [username] [old password] [password]",
         )
+
+    # Add new task
+    if len(sys.argv) < 5 and str(sys.argv[3]).lower() == "add_task":
+        error(
+            "Please enter in the following format:",
+            "task-cli.py [username] [password] add_task [task title]",
+        )
+
+    if len(sys.argv) == 5 and str(sys.argv[3]).lower() == "add_task":
+        add_task(str(sys.argv[1]), str(sys.argv[2]), str(sys.argv[3]))
 
 
 main()
