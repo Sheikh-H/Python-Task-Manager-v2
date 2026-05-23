@@ -7,8 +7,6 @@ from datetime import datetime
 # Global Variables:
 TASKS_FILE = "tasks.json"
 USERS_FILE = "users.json"
-
-# Global functions:
 ALL_TASKS = load_data(TASKS_FILE)
 ALL_USERS = load_data(USERS_FILE)
 
