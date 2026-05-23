@@ -116,27 +116,33 @@ def add_task(username, password, task_title):
 
     current_user = user_login(username, password)
 
-    if current_user:
-        current_user_tasks = []
+    current_user_tasks = []
 
-        for task in ALL_TASKS:
-            if str(task["user_id"]) == str(current_user["id"]):
-                current_user_tasks.append(task)
+    for task in ALL_TASKS:
+        if (
+            str(task["user_id"]) == str(current_user["id"])
+            and task["title"].lower() == task_title.lower()
+        ):
+            error("You already have a task with that title!")
 
-        task_id = max((task["id"] for task in current_user_tasks), default=0) + 1
+    for task in ALL_TASKS:
+        if str(task["user_id"]) == str(current_user["id"]):
+            current_user_tasks.append(task)
 
-        new_task = {
-            "id": int(task_id),
-            "user_id": int(current_user["id"]),
-            "title": task_title,
-            "status": "To-Do",
-            "created_at": f"{datetime.now().replace(microsecond=0)}",
-            "updated_at": None,
-        }
+    task_id = max((task["id"] for task in current_user_tasks), default=0) + 1
 
-        ALL_TASKS.append(new_task)
-        save_data(ALL_TASKS, TASKS_FILE)
-        error(f"Task added for user '{current_user['username']}'!")
+    new_task = {
+        "id": int(task_id),
+        "user_id": int(current_user["id"]),
+        "title": task_title,
+        "status": "To-Do",
+        "created_at": f"{datetime.now().replace(microsecond=0)}",
+        "updated_at": None,
+    }
+
+    ALL_TASKS.append(new_task)
+    save_data(ALL_TASKS, TASKS_FILE)
+    error(f"Task added for user '{current_user['username']}'!")
 
 
 def delete_task(username, password, task_id):
@@ -267,46 +273,27 @@ def mark_as_complete(username, password, task_search):
                 and str(task["id"]) == str(task_search)
                 and task["status"].lower() != "COMPLETED".lower()
             ):
-
                 task["status"] = "COMPLETED"
                 task["updated_at"] = now
+                save_data(ALL_TASKS, TASKS_FILE)
+                print(f"Task '{task['title']}' has now been marked as completed!")
                 break
+        else:
+            error("This task is already marked as completed!")
     else:
-        count = 0
-        task_id = []
         for task in ALL_TASKS:
             if (
-                str(task["user_id"]) == str(current_user["id"])
-                and task["title"].lower() == task_search.lower()
+                task["title"].lower() == task_search.lower()
+                and str(task["user_id"]) == str(current_user["id"])
+                and task["status"].lower() != "COMPLETED".lower()
             ):
-                count += 1
-                task_id.append(task["id"])
-        if count > 1:
-            print(
-                "You have more than one task with the same title, please use task id insted!"
-            )
-            sleep(1)
-            print("List of tasks with same title:")
-            sleep(1)
-            for task in ALL_TASKS:
-                if task["id"] in task_id:
-                    print(f"Task ID: {task['id']}")
-                    print(f"Title: {task['title']}")
-                    print(f"Status: {task['status']}")
-                    print(f"Created at: {task['created_at']}")
-                    print(f"Last updated: {task['updated_at']}")
+                task["status"] = "COMPLETED"
+                task["updated_at"] = now
+                save_data(ALL_TASKS, TASKS_FILE)
+                print(f"Task '{task['title']}' has now been marked as completed!")
+                break
         else:
-            for task in ALL_TASKS:
-                if (
-                    task["title"].lower() == task_search.lower()
-                    and str(task["user_id"]) == str(current_user["id"])
-                    and task["status"].lower() != "COMPLETED".lower()
-                ):
-                    task["status"] = "COMPLETED"
-                    task["updated_at"] = now
-                    break
-    save_data(ALL_TASKS, TASKS_FILE)
-    error(f"Task '{task['title']}' updated to complete!")
+            error("This task is already marked as completed!")
 
 
 def mark_in_progress(username, password, task_search):
@@ -321,50 +308,29 @@ def mark_in_progress(username, password, task_search):
             if (
                 str(task["user_id"]) == str(current_user["id"])
                 and str(task["id"]) == str(task_search)
-                and task["status"].lower() != "IN PROGRESS".lower()
+                and task["status"].lower() != "IN-PROGRESS".lower()
             ):
-
-                task["status"] = "IN PROGRESS"
+                task["status"] = "IN-PROGRESS"
                 task["updated_at"] = now
+                save_data(ALL_TASKS, TASKS_FILE)
+                print(f"Task '{task['title']}' has now been marked as in-progress!")
                 break
+        else:
+            error("This task is already marked as in-progress!")
     else:
-        count = 0
-        task_id = []
         for task in ALL_TASKS:
             if (
-                str(task["user_id"]) == str(current_user["id"])
-                and task["title"].lower() == task_search.lower()
+                task["title"].lower() == task_search.lower()
+                and str(task["user_id"]) == str(current_user["id"])
+                and task["status"].lower() != "IN-PROGRESS".lower()
             ):
-                count += 1
-                task_id.append(task["id"])
-        if count > 1:
-            print(
-                "You have more than one task with the same title, please use task id insted!"
-            )
-            sleep(1)
-            print("List of tasks with same title:")
-            sleep(1)
-            for task in ALL_TASKS:
-                if task["id"] in task_id:
-                    print(f"Task ID: {task['id']}")
-                    print(f"Title: {task['title']}")
-                    print(f"Status: {task['status']}")
-                    print(f"Created at: {task['created_at']}")
-                    print(f"Last updated: {task['updated_at']}")
+                task["status"] = "IN-PROGRESS"
+                task["updated_at"] = now
+                save_data(ALL_TASKS, TASKS_FILE)
+                print(f"Task '{task['title']}' has now been marked as in-progress!")
+                break
         else:
-            for task in ALL_TASKS:
-                if (
-                    task["title"].lower() == task_search.lower()
-                    and str(task["user_id"]) == str(current_user["id"])
-                    and task["status"].lower() != "IN PROGRESS".lower()
-                ):
-                    task["status"] = "IN PROGRESS"
-                    task["updated_at"] = now
-                    break
-                else:
-                    error("Task already marked as 'IN PROGRESS'")
-    save_data(ALL_TASKS, TASKS_FILE)
-    error(f"Task '{task['title']}' updated to complete!")
+            error("This task is already marked as in-progress!")
 
 
 def main():
@@ -404,7 +370,7 @@ def main():
     elif len(sys.argv) == 5 and sys.argv[3].lower() == "mark-complete":
         mark_as_complete(sys.argv[1], sys.argv[2], sys.argv[4].lower())
     elif len(sys.argv) == 5 and sys.argv[3].lower() == "mark-in-progress":
-        mark_as_complete(sys.argv[1], sys.argv[2], sys.argv[4].lower())
+        mark_in_progress(sys.argv[1], sys.argv[2], sys.argv[4].lower())
 
     else:
         error("Invalid command!", "Type task-cli.py --help for manual")
