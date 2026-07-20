@@ -1,4 +1,4 @@
-# 🛡️ SentinelTask: Multi-User CLI Task Manager
+# Multi-User CLI Task Manager
 
 <p align="center">
   <b>A secure, multi-user command-line task management system engineered in Python.</b><br>
