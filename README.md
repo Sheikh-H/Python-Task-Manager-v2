@@ -10,21 +10,19 @@
 <h2>📘 Project Overview</h2>
 
 <p>
-<b>SentinelTask</b> is an advanced command-line interface (CLI) task tracking tool designed to allow multiple users to securely manage their tasks independently on a single terminal environment. This repository was developed specifically as a solution for the <b><a href="https://roadmap.sh/projects/task-tracker" target="_blank">Task Tracker</a></b> project on <b>roadmap.sh</b>.
+<b>Python Task Manager v2</b> is an advanced command-line interface (CLI) task tracking tool designed to allow multiple users to securely manage their tasks independently on a single terminal environment. This repository was developed specifically as a solution for the <b><a href="https://roadmap.sh/projects/task-tracker" target="_blank">Task Tracker</a></b> project on <b>roadmap.sh</b>.
 </p>
 
 <p>
-Unlike basic single-user scripts, SentinelTask implements robust multi-user isolation by utilising secure cryptographic hashing algorithms. Each user's data is isolated, and tasks are strictly mapped to their unique user accounts. No interactive menus are used; instead, it relies entirely on direct, fast command-line arguments passed via the terminal for slick automation and scriptability.
+Unlike basic single-user scripts, Python Task Manager v2 implements robust multi-user isolation by utilising secure cryptographic hashing algorithms. Each user's data is isolated, and tasks are strictly mapped to their unique user accounts. No interactive menus are used; instead, it relies entirely on direct, fast command-line arguments passed via the terminal for slick automation and scriptability.
 </p>
-
-
 
 ---
 
 <h2>🔄 Evolution: Differences from the Old Version</h2>
 
 <p>
-SentinelTask is a complete architectural rewrite of the previous single-user <b><a href="https://github.com/Sheikh-H/TaskManager" target="_blank">Task Manager (CLI Edition)</a></b>. Here is a breakdown of the structural upgrades:
+Python Task Manager v2 is a complete architectural rewrite of the previous single-user <b><a href="https://github.com/Sheikh-H/TaskManager" target="_blank">Task Manager (CLI Edition)</a></b>. Here is a breakdown of the structural upgrades:
 </p>
 
 <table width="100%">
@@ -32,7 +30,7 @@ SentinelTask is a complete architectural rewrite of the previous single-user <b>
     <tr style="background-color: #376e00; color: white;">
       <th style="padding: 10px; text-align: left;">Feature</th>
       <th style="padding: 10px; text-align: left;">Old Version (<a href="https://github.com/Sheikh-H/TaskManager" style="color: white; text-decoration: underline;">Task Manager</a>)</th>
-      <th style="padding: 10px; text-align: left;">New Version (SentinelTask)</th>
+      <th style="padding: 10px; text-align: left;">New Version (Python Task Manager v2)</th>
     </tr>
   </thead>
   <tbody>
@@ -59,7 +57,7 @@ SentinelTask is a complete architectural rewrite of the previous single-user <b>
     <tr>
       <td style="padding: 8px; border-bottom: 1px solid #ddd;"><b>Task Identifiers</b></td>
       <td style="padding: 8px; border-bottom: 1px solid #ddd;">Global application ID counters across the entire file.</td>
-      <td style="padding: 8px; border-bottom: 1px solid #ddd;"><b>User-scoped IDs</b> (`User A` and `User B` can both have a `Task ID #1`).</td>
+      <td style="padding: 8px; border-bottom: 1px solid #ddd;"><b>User-scoped IDs</b> (<code>User A</code> and <code>User B</code> can both have a <code>Task ID #1</code>).</td>
     </tr>
   </tbody>
 </table>
@@ -69,7 +67,7 @@ SentinelTask is a complete architectural rewrite of the previous single-user <b>
 <h2>🧩 Folder Structure</h2>
 
 <pre>
-SentinelTask/
+Python Task Manager v2/
 │
 ├── task-cli.py         # Application entry point & main script
 ├── README.md           # Project documentation
@@ -84,10 +82,10 @@ SentinelTask/
 <ol>
   <li>Ensure you have <b>Python 3.8 or above</b> installed on your operating system.</li>
   <li>Clone or download this repository locally:
-    <pre>git clone https://github.com/Sheikh-H/Sentinel-Task.git</pre>
+    <pre>git clone https://github.com/Sheikh-H/Python-Task-Manager-v2.git</pre>
   </li>
   <li>Navigate directly into the project directory:
-    <pre>cd SentinelTask</pre>
+    <pre>cd Python-Task-Manager-v2</pre>
   </li>
   <li>Execute commands using the syntax options defined below. You can view the syntax manual at any time by running:
     <pre>python task-cli.py --help</pre>
@@ -176,10 +174,10 @@ This section details how the script processes data and explains exactly what eac
 <h3>Core Task Processing</h3>
 <ul>
   <li><code>add_task(username, password, task_title)</code>: Validates credentials via <code>user_login()</code>, checks for duplicate naming conflicts across active records, calculates a user-scoped incrementing identifier index, and maps a complete task entity containing creation timestamps.</li>
-  <li><code>update_task(username, password, task_search, new_title)</code>: Evaluates if <code>task_search</code> is a numerical entry or an explicit string pattern. If string matching yields ambiguous multiple results, the utility returns an intuitive prompt telling the user to use the unique numerical task ID instead</li>
+  <li><code>update_task(username, password, task_search, new_title)</code>: Evaluates if <code>task_search</code> is a numerical entry or an explicit string pattern. If string matching yields ambiguous multiple results, the utility returns an intuitive prompt telling the user to use the unique numerical task ID instead.</li>
   <li><code>delete_task(username, password, task_id)</code>: Iterates sequentially over global storage scopes, maps entries containing matching ownership attributes, and removes indices targeting matching records.</li>
   <li><code>list_task(username, password, list_type)</code>: Acts as an entry dispatcher. It processes multiple human-readable string inputs into standardised categories before querying output formatting streams.</li>
-  <li><code>view_tasks_print(user, category)</code>: Evaluates parameters to layout information fields explicitly framed inside systematic ASCII table layouts, tracing parameters like creation dates and precise adjustment timestamps.</li>
+  <li><code>view_tasks_print(user, category)</code>: Evaluates parameters to lay out information fields explicitly framed inside systematic ASCII table layouts, tracing parameters such as creation dates and precise adjustment timestamps.</li>
 </ul>
 
 ---
@@ -191,6 +189,7 @@ The storage layout separates users from user tasks into distinct files, tracking
 </p>
 
 <h3>User Accounts File (<code>users.json</code>)</h3>
+
 <pre>
 [
   {
@@ -205,6 +204,7 @@ The storage layout separates users from user tasks into distinct files, tracking
 </pre>
 
 <h3>Task Records File (<code>tasks.json</code>)</h3>
+
 <pre>
 [
   {
@@ -223,8 +223,8 @@ The storage layout separates users from user tasks into distinct files, tracking
 <h2>🧰 Requirements & Dependencies</h2>
 
 <ul>
-  <li><b>Python Runtime:</b> version 3.8 or above.</li>
-  <li><b>External Libraries:</b> Completely dependency-free! Built completely using internal standard libraries (<code>sys</code>, <code>json</code>, <code>os</code>, <code>time</code>, <code>datetime</code>, <code>hashlib</code>, and <code>secrets</code>).</li>
+  <li><b>Python Runtime:</b> Version 3.8 or above.</li>
+  <li><b>External Libraries:</b> Completely dependency-free! Built entirely using the Python standard library (<code>sys</code>, <code>json</code>, <code>os</code>, <code>time</code>, <code>datetime</code>, <code>hashlib</code>, and <code>secrets</code>).</li>
 </ul>
 
 ---
@@ -268,12 +268,12 @@ SOFTWARE.
   <a class="header-badge" target="_blank" href="https://github.com/Sheikh-H"><img src="https://img.shields.io/badge/GitHub-376e00?style=flat&logo=github&logoColor=white" alt="GitHub">
   </a><a class="header-badge" target="_blank" href="https://www.linkedin.com/in/sheikh-hussain/"><img src="https://img.shields.io/badge/LinkedIn-376e00?style=flat&logo=LinkedIn&logoColor=white" alt="LinkedIn">
   </a><a class="header-badge" target="_blank" href="mailto:sheikh.hussain1155@gmail.com"><img src="https://img.shields.io/badge/Gmail-376e00?style=flat&logo=gmail&logoColor=white" alt="Gmail">
-  </a><a class="header-badge" target="_blank" href="https://sheikh-h.github.io/"><img src="https://img.shields.io/badge/Portfolio-376e00?style=flat&logo=github&logoColor=white" alt="Portfolio">
+  </a><a class="header-badge" target="_blank" href="https://sheikh-hussain.onrender.com/"><img src="https://img.shields.io/badge/Portfolio-376e00?style=flat&logo=github&logoColor=white" alt="Portfolio">
   </a>
 </div>
 
 <div align="center">
-  <a href="https://www.linkedin.com/in/sheikh-hussain/" target="_blank">By Sheikh Hussain 💚</a>  
+  <a href="https://sheikh-hussain.onrender.com/" target="_blank">By Sheikh Hussain 💚</a>
 </div>
 
 ---
